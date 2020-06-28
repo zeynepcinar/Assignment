@@ -1,7 +1,7 @@
 package com.example.NumberManagement.controller;
 
-import com.example.NumberManagement.Model.NumberModel;
 import com.example.NumberManagement.exception.ResourceNotFoundException;
+import com.example.NumberManagement.model.NumberModel;
 import com.example.NumberManagement.service.NumberService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -39,7 +39,7 @@ public class NumberResourceTest {
     @Test
     public void shouldInsertNumber() throws Exception {
         // GIVEN
-        String number = createRandomNumber();
+        int number = createRandomNumber();
         NumberModel numberToBeInserted = createNumberEntry(number);
         when(numberServiceMock.insertNumber(number)).thenReturn(numberToBeInserted);
 
@@ -77,7 +77,7 @@ public class NumberResourceTest {
     @Test
     public void shouldGetNumber() throws ResourceNotFoundException {
         // GIVEN
-        String number = createRandomNumber();
+        int number = createRandomNumber();
         NumberModel numberToBeGot = createNumberEntry(number);
         when(numberServiceMock.insertNumber(number)).thenReturn(numberToBeGot);
         when(numberServiceMock.getNumber(number)).thenReturn(numberToBeGot);
@@ -121,9 +121,8 @@ public class NumberResourceTest {
     @Test
     public void shouldDeleteNumber() throws ResourceNotFoundException {
         // GIVEN
-        String numberIdToDelete = createRandomNumber();
+        int numberIdToDelete = createRandomNumber();
         doNothing().when(numberServiceMock).deleteNumber(numberIdToDelete);
-        numberServiceMock.insertNumber(numberIdToDelete);
 
         // WHEN
         final ResponseEntity<Void> actualResponseEntity = underTest.deleteNumber(numberIdToDelete);

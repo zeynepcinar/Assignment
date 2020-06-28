@@ -1,6 +1,6 @@
 package com.example.NumberManagement.repository;
 
-import com.example.NumberManagement.Model.NumberModel;
+import com.example.NumberManagement.model.NumberModel;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface NumberRepository extends MongoRepository<NumberModel, String> {
 
-    NumberModel findByNumber(String number);
+    NumberModel findByNumber(int number);
 
     NumberModel findTopByOrderByNumberAsc();
 

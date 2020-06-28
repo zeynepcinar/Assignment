@@ -1,6 +1,6 @@
 package com.example.NumberManagement.service;
 
-import com.example.NumberManagement.Model.NumberModel;
+import com.example.NumberManagement.model.NumberModel;
 import com.example.NumberManagement.exception.BadRequestException;
 import com.example.NumberManagement.exception.ResourceNotFoundException;
 import com.example.NumberManagement.repository.NumberRepository;
@@ -45,7 +45,7 @@ public class NumberServiceTest {
     @Test
     public void shouldInsertNumberSuccessfully() {
         // GIVEN
-        String number = createRandomNumber();
+        int number = createRandomNumber();
         NumberModel numberToBeInserted = createNumberEntry(number);
         when(numberRepositoryMock.findByNumber(number)).thenReturn(null);
         when(numberRepositoryMock.insert(any(NumberModel.class))).thenReturn(numberToBeInserted);
@@ -55,7 +55,7 @@ public class NumberServiceTest {
 
         // THEN
         verify(numberRepositoryMock, times(1)).insert(any(NumberModel.class));
-        verify(numberRepositoryMock, times(1)).findByNumber(any(String.class));
+        verify(numberRepositoryMock, times(1)).findByNumber(number);
         assertNotNull(response);
         assertEquals(response.getNumber(), numberToBeInserted.getNumber());
         assertEquals(response.getDate(), numberToBeInserted.getDate());
@@ -64,7 +64,7 @@ public class NumberServiceTest {
     @Test(expectedExceptions = BadRequestException.class)
     public void shouldThrowBadRequestExceptionWhenInsertIfNumberIsAlreadyExists() {
         // GIVEN
-        String number = createRandomNumber();
+        int number = createRandomNumber();
         NumberModel numberToBeInserted = createNumberEntry(number);
         when(numberRepositoryMock.findByNumber(number)).thenReturn(numberToBeInserted);
         when(numberRepositoryMock.insert(any(NumberModel.class))).thenReturn(numberToBeInserted);
@@ -75,7 +75,7 @@ public class NumberServiceTest {
 
         // THEN
         verify(numberRepositoryMock, times(1)).insert(any(NumberModel.class));
-        verify(numberRepositoryMock, times(2)).findByNumber(any(String.class));
+        verify(numberRepositoryMock, times(2)).findByNumber(number);
         assertNull(response);
     }
 
@@ -114,7 +114,7 @@ public class NumberServiceTest {
     @Test
     public void shouldGetNumberSuccessfully() throws Exception {
         // GIVEN
-        String number = createRandomNumber();
+        int number = createRandomNumber();
         NumberModel existingNumber = createNumberEntry(number);
         when(numberRepositoryMock.findByNumber(number)).thenReturn(existingNumber);
         numberRepositoryMock.insert(existingNumber);
@@ -124,7 +124,7 @@ public class NumberServiceTest {
 
         // THEN
         verify(numberRepositoryMock, times(1)).insert(any(NumberModel.class));
-        verify(numberRepositoryMock, times(1)).findByNumber(any(String.class));
+        verify(numberRepositoryMock, times(1)).findByNumber(number);
         assertNotNull(response);
         assertEquals(response.getNumber(), existingNumber.getNumber());
         assertEquals(response.getDate(), existingNumber.getDate());
@@ -133,8 +133,8 @@ public class NumberServiceTest {
     @Test
     public void shouldGetMaxNumberSuccessfully() throws Exception {
         // GIVEN
-        NumberModel minNumber = createNumberEntry("1");
-        NumberModel maxNumber = createNumberEntry("2");
+        NumberModel minNumber = createNumberEntry(1);
+        NumberModel maxNumber = createNumberEntry(2);
         when(numberRepositoryMock.findTopByOrderByNumberDesc()).thenReturn(maxNumber);
         numberRepositoryMock.insert(minNumber);
         numberRepositoryMock.insert(maxNumber);
@@ -152,8 +152,8 @@ public class NumberServiceTest {
     @Test
     public void shouldGetMinNumberSuccessfully() {
         // GIVEN
-        NumberModel minNumber = createNumberEntry("1");
-        NumberModel maxNumber = createNumberEntry("2");
+        NumberModel minNumber = createNumberEntry(1);
+        NumberModel maxNumber = createNumberEntry(2);
         when(numberRepositoryMock.findTopByOrderByNumberAsc()).thenReturn(minNumber);
         numberRepositoryMock.insert(minNumber);
         numberRepositoryMock.insert(maxNumber);
@@ -171,7 +171,7 @@ public class NumberServiceTest {
     @Test
     public void shouldDeleteNumberSuccessfully() {
         // GIVEN
-        String number = createRandomNumber();
+        int number = createRandomNumber();
         NumberModel existingNumber = createNumberEntry(number);
         doNothing().when(numberRepositoryMock).delete(existingNumber);
         when(numberRepositoryMock.findByNumber(number)).thenReturn(existingNumber);
@@ -181,14 +181,14 @@ public class NumberServiceTest {
         underTest.deleteNumber(number);
 
         // THEN
-        verify(numberRepositoryMock, times(1)).findByNumber(any(String.class));
+        verify(numberRepositoryMock, times(1)).findByNumber(number);
         verify(numberRepositoryMock, times(1)).delete(existingNumber);
     }
 
     @Test(expectedExceptions = ResourceNotFoundException.class)
     public void shouldThrowResourceNotfoundExceptionWhenNumberDoesNotExist() {
         // GIVEN
-        String number = createRandomNumber();
+        int number = createRandomNumber();
         NumberModel existingNumber = createNumberEntry(number);
         numberRepositoryMock.insert(existingNumber);
 
@@ -197,6 +197,6 @@ public class NumberServiceTest {
 
         // THEN
         verify(numberRepositoryMock, times(0)).delete(existingNumber);
-        verify(numberRepositoryMock, times(1)).findByNumber(any(String.class));
+        verify(numberRepositoryMock, times(1)).findByNumber(number);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.NumberManagement.Model;
+package com.example.NumberManagement.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class NumberModel {
 
     @Id
-    private String number;
+    private int number;
     private String date;
 
 }

@@ -1,6 +1,6 @@
 package com.example.NumberManagement.service;
 
-import com.example.NumberManagement.Model.NumberModel;
+import com.example.NumberManagement.model.NumberModel;
 import com.example.NumberManagement.exception.BadRequestException;
 import com.example.NumberManagement.exception.ResourceNotFoundException;
 import com.example.NumberManagement.repository.NumberRepository;
@@ -23,7 +23,7 @@ public class NumberService {
     private static final Logger LOGGER = LogManager.getLogger(NumberService.class);
     private NumberRepository numberRepository;
 
-    public NumberModel insertNumber(String number) {
+    public NumberModel insertNumber(int number) {
         NumberModel num = numberRepository.findByNumber(number);
         if (num != null) {
             throw new BadRequestException("Number " + number + "is already inserted to DB.");
@@ -47,7 +47,7 @@ public class NumberService {
         return numberRepository.findAllByOrderByNumberAsc();
     }
 
-    public NumberModel getNumber(String number) {
+    public NumberModel getNumber(int number) {
         LOGGER.debug("Service - Getting the numberModel by number: " + number);
         return numberRepository.findByNumber(number);
     }
@@ -62,7 +62,7 @@ public class NumberService {
         return numberRepository.findTopByOrderByNumberAsc();
     }
 
-    public void deleteNumber(String number) {
+    public void deleteNumber(int number) {
         LOGGER.debug("Service - Deleting the numberModel by number: " + number);
         NumberModel numberModel = numberRepository.findByNumber(number);
         if (numberModel == null) {
