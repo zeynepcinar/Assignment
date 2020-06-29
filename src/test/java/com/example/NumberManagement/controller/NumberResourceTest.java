@@ -6,7 +6,6 @@ import com.example.NumberManagement.service.NumberService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.ResponseEntity;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -44,15 +43,13 @@ public class NumberResourceTest {
         when(numberServiceMock.insertNumber(number)).thenReturn(numberToBeInserted);
 
         // WHEN
-        final ResponseEntity<NumberModel> actualResponseEntity = underTest
+        final NumberModel responseNumber = underTest
                 .insertNumber(number);
 
         // THEN
-        assertNotNull(actualResponseEntity);
-        final NumberModel numberResource = actualResponseEntity.getBody();
-        assertNotNull(numberResource);
-        assertEquals(numberResource.getNumber(), numberToBeInserted.getNumber());
-        assertEquals(numberResource.getDate(), numberToBeInserted.getDate());
+        assertNotNull(responseNumber);
+        assertEquals(responseNumber.getNumber(), numberToBeInserted.getNumber());
+        assertEquals(responseNumber.getDate(), numberToBeInserted.getDate());
 
         verify(numberServiceMock, times(1)).insertNumber(number);
     }
@@ -64,13 +61,11 @@ public class NumberResourceTest {
         when(numberServiceMock.getAllNumbers("ASC")).thenReturn(numberModelList);
 
         // WHEN
-        final ResponseEntity<List<NumberModel>> actualResponseEntity = underTest.getAllNumbers("ASC");
+        List<NumberModel> responseNumberList = underTest.getAllNumbers("ASC");
 
         // THEN
-        assertNotNull(actualResponseEntity);
-        final List<NumberModel> numberResource = actualResponseEntity.getBody();
-        assertEquals(numberResource.get(0).getNumber(), numberModelList.get(0).getNumber());
-        assertEquals(numberResource.get(0).getDate(), numberModelList.get(0).getDate());
+        assertEquals(responseNumberList.get(0).getNumber(), numberModelList.get(0).getNumber());
+        assertEquals(responseNumberList.get(0).getDate(), numberModelList.get(0).getDate());
         verify(numberServiceMock, times(1)).getAllNumbers("ASC");
     }
 
@@ -83,10 +78,10 @@ public class NumberResourceTest {
         when(numberServiceMock.getNumber(number)).thenReturn(numberToBeGot);
 
         // WHEN
-        final ResponseEntity<NumberModel> actualResponseEntity = underTest.getNumber(number);
+        final NumberModel responseNumber = underTest.getNumber(number);
 
         // THEN
-        assertNotNull(actualResponseEntity);
+        assertNotNull(responseNumber);
         verify(numberServiceMock, times(1)).getNumber(number);
     }
 
@@ -97,10 +92,10 @@ public class NumberResourceTest {
         when(numberServiceMock.getMaxNumber()).thenReturn(numberModelList.get(1));
 
         // WHEN
-        final ResponseEntity<NumberModel> actualResponseEntity = underTest.getMaxNumber();
+        final NumberModel responseNumber = underTest.getMaxNumber();
 
         // THEN
-        assertNotNull(actualResponseEntity);
+        assertNotNull(responseNumber);
         verify(numberServiceMock, times(1)).getMaxNumber();
     }
 
@@ -111,10 +106,10 @@ public class NumberResourceTest {
         when(numberServiceMock.getMinNumber()).thenReturn(numberModelList.get(0));
 
         // WHEN
-        final ResponseEntity<NumberModel> actualResponseEntity = underTest.getMinNumber();
+        final NumberModel responseNumber = underTest.getMinNumber();
 
         // THEN
-        assertNotNull(actualResponseEntity);
+        assertNotNull(responseNumber);
         verify(numberServiceMock, times(1)).getMinNumber();
     }
 
@@ -125,10 +120,9 @@ public class NumberResourceTest {
         doNothing().when(numberServiceMock).deleteNumber(numberIdToDelete);
 
         // WHEN
-        final ResponseEntity<Void> actualResponseEntity = underTest.deleteNumber(numberIdToDelete);
+        underTest.deleteNumber(numberIdToDelete);
 
         // THEN
-        assertNotNull(actualResponseEntity);
         verify(numberServiceMock, times(1)).deleteNumber(numberIdToDelete);
     }
 

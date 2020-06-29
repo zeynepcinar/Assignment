@@ -1,8 +1,9 @@
 package com.example.NumberManagement.service;
 
-import com.example.NumberManagement.model.NumberModel;
 import com.example.NumberManagement.exception.BadRequestException;
+import com.example.NumberManagement.exception.ResourceAlreadyExistsException;
 import com.example.NumberManagement.exception.ResourceNotFoundException;
+import com.example.NumberManagement.model.NumberModel;
 import com.example.NumberManagement.repository.NumberRepository;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -26,7 +27,7 @@ public class NumberService {
     public NumberModel insertNumber(int number) {
         NumberModel num = numberRepository.findByNumber(number);
         if (num != null) {
-            throw new BadRequestException("Number " + number + "is already inserted to DB.");
+            throw new ResourceAlreadyExistsException("Number " + number + " is already inserted to DB.");
         }
         Calendar cal = Calendar.getInstance();
         Date date = cal.getTime();
@@ -40,16 +41,23 @@ public class NumberService {
     }
 
     public List<NumberModel> getAllNumbers(String order) {
-        LOGGER.debug("Service - Getting all numbers from DB.");
-        if (order.equals("DESC")) {
+        LOGGER.debug("Service - Getting all numbers from db.");
+        if (order == null || order.equals("ASC")) {
+            return numberRepository.findAllByOrderByNumberAsc();
+        } else if (order.equals("DESC")) {
             return numberRepository.findAllByOrderByNumberDesc();
+        } else {
+            throw new BadRequestException(order + " is not a valid order");
         }
-        return numberRepository.findAllByOrderByNumberAsc();
     }
 
     public NumberModel getNumber(int number) {
         LOGGER.debug("Service - Getting the numberModel by number: " + number);
-        return numberRepository.findByNumber(number);
+        NumberModel numberModel = numberRepository.findByNumber(number);
+        if (numberModel == null) {
+            throw new ResourceNotFoundException("There is no " + number + " in db.");
+        }
+        return numberModel;
     }
 
     public NumberModel getMaxNumber() {
@@ -67,7 +75,7 @@ public class NumberService {
         NumberModel numberModel = numberRepository.findByNumber(number);
         if (numberModel == null) {
             LOGGER.info("There is no number {} in db", number);
-            throw new ResourceNotFoundException("Number " + number + "does not exist in db");
+            throw new ResourceNotFoundException("Number " + number + " does not exist in db");
         }
         numberRepository.delete(numberModel);
     }

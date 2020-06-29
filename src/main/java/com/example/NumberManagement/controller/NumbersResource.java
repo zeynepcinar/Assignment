@@ -1,6 +1,5 @@
 package com.example.NumberManagement.controller;
 
-import com.example.NumberManagement.exception.BadRequestException;
 import com.example.NumberManagement.model.NumberModel;
 import com.example.NumberManagement.service.NumberService;
 import io.swagger.annotations.ApiOperation;
@@ -10,7 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,58 +34,47 @@ public class NumbersResource {
     @PostMapping(value = "/{number}")
     @ApiOperation(value = "Insert new number.", httpMethod = "POST")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<NumberModel> insertNumber(@PathVariable("number") int number) {
+    public NumberModel insertNumber(@PathVariable("number") int number) {
         LOGGER.info("number {} is being added to db", number);
-        NumberModel numberModel = numberService.insertNumber(number);
-        if (numberModel == null) {
-            throw new BadRequestException("number " + number + " is already exists in db");
-        }
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(numberModel);
+        return numberService.insertNumber(number);
     }
 
     @GetMapping(value = "")
     @ApiOperation(value = "Get all numbers.", httpMethod = "GET")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<NumberModel>> getAllNumbers(@RequestParam("name") String order) {
-        LOGGER.info("All numbers are being got from DB.");
-        List<NumberModel> numberModels = numberService.getAllNumbers(order);
-        return ResponseEntity.ok().body(numberModels);
+    public List<NumberModel> getAllNumbers(@RequestParam(required = false) String order) {
+        LOGGER.info("All numbers are being got from db.");
+        return numberService.getAllNumbers(order);
     }
 
-    @GetMapping(value = "{number}")
+    @GetMapping(value = "/{number}")
     @ApiOperation(value = "Get number.", httpMethod = "GET")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<NumberModel> getNumber(@PathVariable("number") int number) {
-        LOGGER.info("number id {} is being got from DB", number);
-        NumberModel retrievedNumber = numberService.getNumber(number);
-        return ResponseEntity.ok().body(retrievedNumber);
+    public NumberModel getNumber(@PathVariable("number") int number) {
+        LOGGER.info("number id {} is being got from db.", number);
+        return numberService.getNumber(number);
     }
 
     @GetMapping(value = "/max")
     @ApiOperation(value = "Get max number.", httpMethod = "GET")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<NumberModel> getMaxNumber() {
-        LOGGER.info("Getting Max Num");
-        NumberModel maxNumber = numberService.getMaxNumber();
-        return ResponseEntity.ok().body(maxNumber);
+    public NumberModel getMaxNumber() {
+        return numberService.getMaxNumber();
     }
 
     @GetMapping(value = "/min")
     @ApiOperation(value = "Get min number.", httpMethod = "GET")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<NumberModel> getMinNumber() {
+    public NumberModel getMinNumber() {
         LOGGER.info("Getting Min Num");
-        NumberModel minNumber = numberService.getMinNumber();
-        return ResponseEntity.ok().body(minNumber);
+        return numberService.getMinNumber();
     }
 
     @DeleteMapping(value = "/{number}")
-    @ApiOperation(value = "Get min number.", httpMethod = "DELETE")
+    @ApiOperation(value = "Delete number.", httpMethod = "DELETE")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Void> deleteNumber(@PathVariable("number") int number) {
+    public void deleteNumber(@PathVariable("number") int number) {
         LOGGER.info("number id {} is being deleted from db", number);
         numberService.deleteNumber(number);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
