@@ -1,8 +1,8 @@
 package com.example.NumberManagement.service;
 
-import com.example.NumberManagement.model.NumberModel;
-import com.example.NumberManagement.exception.BadRequestException;
+import com.example.NumberManagement.exception.ResourceAlreadyExistsException;
 import com.example.NumberManagement.exception.ResourceNotFoundException;
+import com.example.NumberManagement.model.NumberModel;
 import com.example.NumberManagement.repository.NumberRepository;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -61,7 +61,7 @@ public class NumberServiceTest {
         assertEquals(response.getDate(), numberToBeInserted.getDate());
     }
 
-    @Test(expectedExceptions = BadRequestException.class)
+    @Test(expectedExceptions = ResourceAlreadyExistsException.class)
     public void shouldThrowBadRequestExceptionWhenInsertIfNumberIsAlreadyExists() {
         // GIVEN
         int number = createRandomNumber();
@@ -86,7 +86,7 @@ public class NumberServiceTest {
         when(numberRepositoryMock.findAllByOrderByNumberAsc()).thenReturn(numberModelList);
 
         // WHEN
-        List<NumberModel> response = underTest.getAllNumbers("");
+        List<NumberModel> response = underTest.getAllNumbers(null);
 
         // THEN
         verify(numberRepositoryMock, times(1)).findAllByOrderByNumberAsc();
